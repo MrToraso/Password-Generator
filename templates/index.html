@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Torasoft Password Generator</title>
+  <link rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+  <h1> <<_TORASOFT PASSWORD GENERATOR </h1>
+
+  <label>Password Length</label>
+  <input type="number" id="length" value="16" min="6" max="40">
+
+  <label><input type="checkbox" id="numbers" checked> Numbers</label>
+  <label><input type="checkbox" id="symbols" checked> Symbols</label>
+
+  <button onclick="generatePassword()">GENERATE</button>
+
+  <div class="result-box">
+    <div id="result">Your password will appear here</div>
+    <button class="copy-btn" onclick="copyPassword()">COPY</button>
+  </div>
+
+  <div id="strength" class="strength">Strength: --</div>
+
+</div>
+
+<script>
+async function generatePassword() {
+
+    const data = {
+        longitud: document.getElementById("length").value,
+        numeros: document.getElementById("numbers").checked,
+        simbolos: document.getElementById("symbols").checked
+    };
+
+    const response = await fetch("/generate", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    const password = result.password;
+
+    // typing effect
+    const output = document.getElementById("result");
+    output.innerText = "";
+    let i = 0;
+
+    const interval = setInterval(() => {
+        output.innerText += password[i];
+        i++;
+        if (i >= password.length) clearInterval(interval);
+    }, 30);
+
+    checkStrength(password);
+}
+
+function copyPassword() {
+    const text = document.getElementById("result").innerText;
+    navigator.clipboard.writeText(text);
+    alert("Copied!");
+}
+
+function checkStrength(password) {
+    let score = 0;
+
+    if(password.length >= 12) score++;
+    if(/[0-9]/.test(password)) score++;
+    if(/[!@#$%&*?]/.test(password)) score++;
+
+    const strength = document.getElementById("strength");
+
+    if(score === 1){
+        strength.innerText = "Strength: WEAK";
+        strength.style.color = "#ff5555";
+    }
+    else if(score === 2){
+        strength.innerText = "Strength: MEDIUM";
+        strength.style.color = "#ffaa00";
+    }
+    else {
+        strength.innerText = "Strength: STRONG";
+        strength.style.color = "#00ff99";
+    }
+}
+</script>
+</body>
+</html>
+
