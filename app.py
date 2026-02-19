@@ -33,4 +33,5 @@ def generate():
     return jsonify({"password": password})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+
+    app.run()
