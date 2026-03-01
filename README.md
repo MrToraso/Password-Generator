@@ -2,7 +2,7 @@
 ---
 
 # 🔐 PASSWORD GENERATOR
-Demo✨:https://password-generator-nlb3.onrender.com
+Demo✨: https://password-generator-mu-two.vercel.app/
 
 ```md
 # 🔐 Torasoft Password Generator
